@@ -6,7 +6,14 @@ import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.TimerTask;
+import java.util.Timer;
 
 public class MySlitherJFrame extends JFrame {
     private static final String[] SNAKES = {"green"};
@@ -19,11 +26,11 @@ public class MySlitherJFrame extends JFrame {
     private final JSplitPane rightSplitPane, fullSplitPane;
     private final JTextArea log;
     private final JScrollBar logScrollBar;
-    private final JTable highscoreList;
+    private final JTable highScoreList;
     private final MySlitherCanvas canvas;
 
-    //private final long startTime;
-    //private final Timer updateTimer;
+    private final long startTime;
+    private final Timer updateTimer;
     private Status status;
     private URI[] serverList;
     private MySlitherWebSocketClient client;
@@ -34,11 +41,27 @@ public class MySlitherJFrame extends JFrame {
     public MySlitherJFrame() {
         super("MySlither.io");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                updateTimer.cancel();
+                if (status==Status.CONNECTING || status==Status.CONNECTED){
+                    disconnect();
+                }
+                //TODO realisation
+//                canvas.repaintThread.shutdown();
+//                try {
+//                    canvas.repaintThread.awaitTermination(1000, TimeUnit.MILLISECONDS);
+//                } catch (InterruptedException ex) {
+//                    ex.printStackTrace();
+//                }
+            }
+        });
 
         getContentPane().setLayout(new BorderLayout());
 
         canvas = new MySlitherCanvas(this);
-        player = new Player("anasty");
+        player = new Player("anasty");//TODO change
 
         JPanel settings = new JPanel(new GridBagLayout());
 
@@ -50,25 +73,18 @@ public class MySlitherJFrame extends JFrame {
         snake.setMaximumRowCount(snake.getItemCount());
 
         useRandomServer = new JCheckBox("use random server", true);
-        useRandomServer.addActionListener(a -> {
-            setStatus(null);
-        });
+        useRandomServer.addActionListener(a -> setStatus(null));
 
         connect = new JToggleButton();
-//        connect.addActionListener(a -> {
-//            switch (status) {
-//                case DISCONNECTED:
-//                    connect();
-//                    break;
-//                case CONNECTING:
-//                case CONNECTED:
-//                    disconnect();
-//                    break;
-//                case DISCONNECTING:
-//                    break;
-//            }
-//        });
-            connect.addAncestorListener(new AncestorListener() {
+        connect.addActionListener(a -> {
+            switch (status) {
+                case DISCONNECTED -> connect();
+                case CONNECTING, CONNECTED -> disconnect();
+                case DISCONNECTING -> {
+                }
+            }
+        });
+        connect.addAncestorListener(new AncestorListener() {
             @Override
             public void ancestorAdded(AncestorEvent event) {
                 connect.requestFocusInWindow();
@@ -89,31 +105,57 @@ public class MySlitherJFrame extends JFrame {
         kills = new JLabel();
 
         settings.add(new JLabel("server:"),
-                new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(0, 0, 1, 1, 0, 0,
+                        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(server,
-                new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(1, 0, 1, 1, 0, 0,
+                        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2,
+                        2, 2), 0, 0));
         settings.add(new JLabel("name:"),
-                new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(0, 1, 1, 1, 0, 0,
+                        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(name,
-                new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(1, 1, 1, 1, 0, 0,
+                        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2,
+                        2, 2), 0, 0));
         settings.add(new JLabel("skin:"),
-                new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(0, 2, 1, 1, 0, 0,
+                        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(snake,
-                new GridBagConstraints(1, 2, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(1, 2, 1, 1, 0, 0,
+                        GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2,
+                        2, 2), 0, 0));
         settings.add(useRandomServer,
-                new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(2, 0, 1, 1, 0, 0,
+                        GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(connect,
-                new GridBagConstraints(2, 1, 1, 2, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(2, 1, 1, 2, 0, 0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(new JSeparator(SwingConstants.VERTICAL),
-                new GridBagConstraints(3, 0, 1, 3, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 6, 0, 6), 0, 0));
+                new GridBagConstraints(3, 0, 1, 3, 0, 0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 6, 0,
+                        6), 0, 0));
         settings.add(new JLabel("kills:"),
-                new GridBagConstraints(4, 1, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(4, 1, 1, 1, 0, 0,
+                        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(kills,
-                new GridBagConstraints(5, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(5, 1, 1, 1, 0, 0,
+                        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(new JLabel("rank:"),
-                new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(4, 2, 1, 1, 0, 0,
+                        GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
         settings.add(rank,
-                new GridBagConstraints(5, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0));
+                new GridBagConstraints(5, 2, 1, 1, 0, 0,
+                        GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(2, 2, 2,
+                        2), 0, 0));
 
         JComponent upperRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         upperRow.add(settings);
@@ -129,38 +171,39 @@ public class MySlitherJFrame extends JFrame {
         log.getActionMap().clear();
         log.getInputMap().put(KeyStroke.getKeyStroke("END"), "gotoEnd");
         log.getActionMap().put("gotoEnd", new AbstractAction() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    logScrollBar.setValue(logScrollBar.getMaximum() - logScrollBar.getVisibleAmount());
-                });
+                SwingUtilities.invokeLater(() ->
+                        logScrollBar.setValue(logScrollBar.getMaximum() - logScrollBar.getVisibleAmount()));
             }
         });
         log.getInputMap().put(KeyStroke.getKeyStroke("HOME"), "gotoStart");
         log.getActionMap().put("gotoStart", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            SwingUtilities.invokeLater(() -> {
-                logScrollBar.setValue(logScrollBar.getMinimum());
-            });
+            SwingUtilities.invokeLater(() -> logScrollBar.setValue(logScrollBar.getMinimum()));
             }
         });
 
-        highscoreList = new JTable(10, 2);
-        highscoreList.setEnabled(false);
-        highscoreList.getColumnModel().getColumn(0).setMinWidth(64);
-        highscoreList.getColumnModel().getColumn(1).setMinWidth(192);
-        highscoreList.getColumnModel().getColumn(0).setHeaderValue("length");
-        highscoreList.getColumnModel().getColumn(1).setHeaderValue("name");
-        highscoreList.getTableHeader().setReorderingAllowed(false);
+        int columnLengthWidth = 64;
+        int columnNameWidth = 64;
+
+        highScoreList = new JTable(10, 2);
+        highScoreList.setEnabled(false);
+        highScoreList.getColumnModel().getColumn(0).setMinWidth(columnLengthWidth);
+        highScoreList.getColumnModel().getColumn(1).setMinWidth(columnNameWidth);
+        highScoreList.getColumnModel().getColumn(0).setHeaderValue("length");
+        highScoreList.getColumnModel().getColumn(1).setHeaderValue("name");
+        highScoreList.getTableHeader().setReorderingAllowed(false);
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-        highscoreList.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
-        highscoreList.setPreferredScrollableViewportSize(new Dimension(64 + 192, highscoreList.getPreferredSize().height));
+        highScoreList.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+        highScoreList.setPreferredScrollableViewportSize(new Dimension(columnLengthWidth + columnNameWidth,
+                highScoreList.getPreferredSize().height));
 
         // == split-panes ==
-        rightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, canvas, new JScrollPane(highscoreList));
+        rightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
+                canvas, new JScrollPane(highScoreList));
         rightSplitPane.setDividerSize(rightSplitPane.getDividerSize() * 4 / 3);
         rightSplitPane.setResizeWeight(0.99);
 
@@ -168,7 +211,8 @@ public class MySlitherJFrame extends JFrame {
         logScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         logScrollPane.setPreferredSize(new Dimension(300, logScrollPane.getPreferredSize().height));
         logScrollBar = logScrollPane.getVerticalScrollBar();
-        fullSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, logScrollPane, rightSplitPane);
+        fullSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, logScrollPane,
+                rightSplitPane);
         fullSplitPane.setDividerSize(fullSplitPane.getDividerSize() * 4 / 3);
         fullSplitPane.setResizeWeight(0.1);
 
@@ -177,6 +221,23 @@ public class MySlitherJFrame extends JFrame {
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         setSize(screenWidth, screenHeight);
+
+        validate();
+        startTime = System.currentTimeMillis();
+        setStatus(Status.DISCONNECTED);
+
+        updateTimer = new Timer();
+        updateTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                synchronized (modelLock) {
+                    if (status == Status.CONNECTED && model != null) {
+                        //model.update();
+                        //client.sendData(player.action(model));
+                    }
+                }
+            }
+        }, 1, 10);
 
     }
     private void setStatus(Status newStatus) {
@@ -190,5 +251,106 @@ public class MySlitherJFrame extends JFrame {
         useRandomServer.setEnabled(status.allowModifyData);
         name.setEnabled(status.allowModifyData);
         snake.setEnabled(status.allowModifyData);
+    }
+
+    void log(String text) {
+        print(String.format("%6d\t%s", System.currentTimeMillis() - startTime, text));
+    }
+
+    private void print(String text) {
+        SwingUtilities.invokeLater(() -> {
+            boolean scrollToBottom = !logScrollBar.getValueIsAdjusting() && logScrollBar.getValue() >= logScrollBar.getMaximum() - logScrollBar.getVisibleAmount();
+            log.append('\n' + text);
+            fullSplitPane.getLeftComponent().validate();
+            if (scrollToBottom) {
+                logScrollBar.setValue(logScrollBar.getMaximum() - logScrollBar.getVisibleAmount());
+            }
+        });
+    }
+
+    void onOpen() {
+        switch (status) {
+            case CONNECTING -> {
+                setStatus(Status.CONNECTED);
+                client.sendInitRequest(snake.getSelectedIndex(), name.getText());
+            }
+            case DISCONNECTING -> disconnect();
+            default -> throw new IllegalStateException("Connected while not connecting!");
+        }
+    }
+
+    void onClose(){
+        switch (status){
+            case CONNECTED, DISCONNECTING -> {
+                setStatus(Status.DISCONNECTED);
+                client=null;
+            }
+            case CONNECTING -> {
+                client=null;
+                trySingleConnect();
+            }
+            default -> throw new IllegalStateException("Disconnected while not connecting, connected or disconnecting!");
+        }
+    }
+
+    public void connect(){
+        new Thread(()->{
+           if (status!=Status.DISCONNECTED){
+               throw new IllegalStateException("Connecting while not disconnected");
+           }
+           setStatus(Status.CONNECTING);
+           setModel(null);
+            if (useRandomServer.isSelected()) {
+                log("fetching server list...");
+                serverList=MySlitherWebSocketClient.getServerList();
+                log("resolved " + serverList.length + " servers");
+                if (serverList.length == 0){
+                    log("no server found");
+                    setStatus(Status.DISCONNECTED);
+                    return;
+                }
+            }
+            if (status == Status.CONNECTING){
+                trySingleConnect();
+            }
+        }).start();
+    }
+
+    void trySingleConnect(){
+        if (status!=Status.CONNECTING){
+            throw new IllegalStateException("Trying single connection while not connecting");
+        }
+
+        if (useRandomServer.isSelected()){
+            client = new MySlitherWebSocketClient(serverList[(int) (Math.random()*serverList.length)], this);
+            server.setText(client.getURI().toString());
+        } else {
+            try {
+                client = new MySlitherWebSocketClient(new URI(server.getText()), this);
+            } catch (URISyntaxException e) {
+                log("invalid server");
+                setStatus(Status.DISCONNECTED);
+                return;
+            }
+        }
+        log("connecting to "+client.getURI()+" ...");
+        client.connect();
+    }
+    public void disconnect(){
+        if (status==Status.DISCONNECTED){
+            throw new IllegalStateException("Already disconnected");
+        }
+        setStatus(Status.DISCONNECTING);
+        if (client!=null){
+            client.close();
+        }
+    }
+
+    void setModel(MySlitherModel model) {
+        synchronized (modelLock) {
+            this.model = model;
+            rank.setText(null);
+            kills.setText(null);
+        }
     }
 }
