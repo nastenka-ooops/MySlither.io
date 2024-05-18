@@ -3,7 +3,9 @@ package org.example;
 import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.net.URI;
 
 public class MySlitherJFrame extends JFrame {
@@ -14,10 +16,10 @@ public class MySlitherJFrame extends JFrame {
     private final JCheckBox useRandomServer;
     private final JToggleButton connect;
     private final JLabel rank, kills;
-    //private final JSplitPane rightSplitPane, fullSplitPane;
-    //private final JTextArea log;
-    //private final JScrollBar logScrollBar;
-    //private final JTable highscoreList;
+    private final JSplitPane rightSplitPane, fullSplitPane;
+    private final JTextArea log;
+    private final JScrollBar logScrollBar;
+    private final JTable highscoreList;
     private final MySlitherCanvas canvas;
 
     //private final long startTime;
@@ -75,12 +77,10 @@ public class MySlitherJFrame extends JFrame {
 
             @Override
             public void ancestorRemoved(AncestorEvent event) {
-
             }
 
             @Override
             public void ancestorMoved(AncestorEvent event) {
-
             }
         });
 
@@ -119,9 +119,64 @@ public class MySlitherJFrame extends JFrame {
         upperRow.add(settings);
         getContentPane().add(upperRow, BorderLayout.NORTH);
 
+        log = new JTextArea("hi");
+        log.setEditable(false);
+        log.setLineWrap(true);
+        log.setFont(Font.decode("Monospaced 11"));
+        log.setTabSize(4);
+        log.getCaret().setSelectionVisible(false);
+        log.getInputMap().clear();
+        log.getActionMap().clear();
+        log.getInputMap().put(KeyStroke.getKeyStroke("END"), "gotoEnd");
+        log.getActionMap().put("gotoEnd", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    logScrollBar.setValue(logScrollBar.getMaximum() - logScrollBar.getVisibleAmount());
+                });
+            }
+        });
+        log.getInputMap().put(KeyStroke.getKeyStroke("HOME"), "gotoStart");
+        log.getActionMap().put("gotoStart", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(() -> {
+                logScrollBar.setValue(logScrollBar.getMinimum());
+            });
+            }
+        });
+
+        highscoreList = new JTable(10, 2);
+        highscoreList.setEnabled(false);
+        highscoreList.getColumnModel().getColumn(0).setMinWidth(64);
+        highscoreList.getColumnModel().getColumn(1).setMinWidth(192);
+        highscoreList.getColumnModel().getColumn(0).setHeaderValue("length");
+        highscoreList.getColumnModel().getColumn(1).setHeaderValue("name");
+        highscoreList.getTableHeader().setReorderingAllowed(false);
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+        highscoreList.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+        highscoreList.setPreferredScrollableViewportSize(new Dimension(64 + 192, highscoreList.getPreferredSize().height));
+
+        // == split-panes ==
+        rightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, canvas, new JScrollPane(highscoreList));
+        rightSplitPane.setDividerSize(rightSplitPane.getDividerSize() * 4 / 3);
+        rightSplitPane.setResizeWeight(0.99);
+
+        JScrollPane logScrollPane = new JScrollPane(log);
+        logScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        logScrollPane.setPreferredSize(new Dimension(300, logScrollPane.getPreferredSize().height));
+        logScrollBar = logScrollPane.getVerticalScrollBar();
+        fullSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, logScrollPane, rightSplitPane);
+        fullSplitPane.setDividerSize(fullSplitPane.getDividerSize() * 4 / 3);
+        fullSplitPane.setResizeWeight(0.1);
+
+        getContentPane().add(fullSplitPane, BorderLayout.CENTER);
+
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-        setSize(screenWidth * 3 / 4, screenHeight * 4 / 5);
+        setSize(screenWidth, screenHeight);
 
     }
     private void setStatus(Status newStatus) {
