@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.TimerTask;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class MySlitherJFrame extends JFrame {
     private static final String[] SNAKES = {"green"};
@@ -46,20 +47,19 @@ public class MySlitherJFrame extends JFrame {
                 if (status==Status.CONNECTING || status==Status.CONNECTED){
                     disconnect();
                 }
-                //TODO realisation
-//                canvas.repaintThread.shutdown();
-//                try {
-//                    canvas.repaintThread.awaitTermination(1000, TimeUnit.MILLISECONDS);
-//                } catch (InterruptedException ex) {
-//                    ex.printStackTrace();
-//                }
+                canvas.repaintThread.shutdown();
+                try {
+                    canvas.repaintThread.awaitTermination(1000, TimeUnit.NANOSECONDS);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
         getContentPane().setLayout(new BorderLayout());
 
         canvas = new MySlitherCanvas(this);
-        player = new Player("anasty");//TODO change
+        player = new Player("shmasty");
 
         JPanel settings = new JPanel(new GridBagLayout());
 

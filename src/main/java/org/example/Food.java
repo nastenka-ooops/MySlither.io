@@ -1,7 +1,7 @@
 package org.example;
 
 public class Food {
-    final int x,y;
+    final int x, y;
     private final double size;
     private final double rsp;
     private final long spawnTime;
@@ -14,4 +14,12 @@ public class Food {
         spawnTime = System.currentTimeMillis();
     }
 
+    public double getRadius() {
+        double fillRate = rsp * (System.currentTimeMillis() - spawnTime) / 1200.0;
+        if (fillRate >= 1) {
+            return size;
+        } else {
+            return (1 - Math.cos(Math.PI * fillRate)) / 2 * size;
+        }
+    }
 }

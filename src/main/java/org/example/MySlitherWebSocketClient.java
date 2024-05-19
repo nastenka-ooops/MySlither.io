@@ -317,7 +317,7 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
         int sectorX = data[3];
         int sectorY = data[4];
-        model.addSector(sectorX, sectorY);
+        model.removeSector(sectorX, sectorY);
     }
 
     private void processAddSector(int[] data) {
@@ -327,7 +327,7 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
         int sectorX = data[3];
         int sectorY = data[4];
-        model.removeSector(sectorX, sectorY);
+        model.addSector(sectorX, sectorY);
     }
 
     private void processDead(int[] data) {

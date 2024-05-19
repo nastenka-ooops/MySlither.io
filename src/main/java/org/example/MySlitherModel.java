@@ -98,13 +98,13 @@ public class MySlitherModel {
 
     void addSector(int x, int y) {
         synchronized (view.modelLock) {
-            sectors[x][y] = true;
+            sectors[y][x] = true;
         }
     }
 
     public void removeSector(int x, int y) {
         synchronized (view.modelLock) {
-            sectors[x][y] = true;
+            sectors[y][x] = false;
             foods.values().removeIf(food -> food.x / sectorSize == x && food.y / sectorSize == y);
         }
     }
