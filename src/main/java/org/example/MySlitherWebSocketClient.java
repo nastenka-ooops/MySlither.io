@@ -127,14 +127,119 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                 processUpdatePrey(data);
                 break;
             case 'y':
-            case 'o':
+                processAddRemovePrey(data);
+                break;
+           // case 'o':
             case 'k':
+                processKill(data);
+                break;
 
         }
     }
 
-    private void processUpdatePrey(int[] data) {
+    void sendData(){
+        //TODO send data to server
+    }
 
+    private void processKill(int[] data) {
+        if (data.length != 8) {
+            view.log("kill wrong length!");
+            return;
+        }
+
+        int killerId = (data[3] << 8) | (data[4]);
+        int kills = (data[5] << 16) |(data[6] << 8) | (data[7]);
+
+        if (killerId == model.snake.id) {
+            view.setKills(kills);
+        } else {
+            view.log("kill packet with invalid id: " + killerId);
+        }
+    }
+
+    private void processAddRemovePrey(int[] data) {
+        if (data.length == 5) {
+            int preyId = (data[3] << 8) | (data[4]);
+            model.removePrey(preyId);
+        } else if (data.length == 7) {
+            int preyId = (data[3] << 8) | (data[4]);
+            int eatenId = (data[5] << 8) | (data[6]);
+            model.removePrey(preyId);
+        } else if (data.length==22){
+            int preyId = (data[3] << 8) | (data[4]);
+            int colorId = data[5];
+            double x = ((data[6] << 16) |(data[7] << 8) | (data[8]))/5.0;
+            double y = ((data[9] << 16) |(data[10] << 8) | (data[11]))/5.0;
+            double size = data[12]/5.0;
+            int direction = data[13]-48;
+            double wang = ((data[14] << 16) |(data[15] << 8) | (data[16]))*PI2/ANGLE_CONSTANT;
+            double ang = ((data[17] << 16) |(data[18] << 8) | (data[19]))*PI2/ANGLE_CONSTANT;
+            double speed = ((data[20] << 8) | (data[21]))/1000.0;
+            model.addPrey(preyId, new Prey(x, y, direction, wang, ang, speed, size));
+        } else {
+            view.log("add/remove prey wrong length!");
+        }
+    }
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+        view.log("closed: " + code + ", " + remote + ", " + reason);
+        view.onClose();
+    }
+
+    @Override
+    public void onError(Exception ex) {
+        view.log("ERROR: " + ex);
+        ex.printStackTrace();
+    }
+
+    private void processUpdatePrey(int[] data) {
+        if (data.length != 11 && data.length != 12 && data.length != 13 && data.length != 14 &&
+                data.length != 15 && data.length != 16 && data.length != 18) {
+            view.log("update prey wrong length!");
+            return;
+        }
+        int preyId = (data[3] << 8) | data[4];
+        int x = ((data[5] << 8) | data[6]) * 3 + 1;
+        int y = ((data[7] << 8) | data[8]) * 3 + 1;
+
+        synchronized (view.modelLock) {
+            Prey prey = model.getPrey(preyId);
+            prey.x = x;
+            prey.y = y;
+
+            switch (data.length) {
+                case 11:
+                    prey.speed = ((data[9] << 8) | data[10]) / 1000.0;
+                    break;
+                case 12:
+                    prey.ang = ((data[9] << 16) | (data[10] << 8) | data[11]) * PI2 / ANGLE_CONSTANT;
+                    break;
+                case 13:
+                    prey.dir = data[9] - 48;
+                    prey.wang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
+                    break;
+                case 14:
+                    prey.ang = ((data[9] << 16) | (data[10] << 8) | data[11]) * PI2 / ANGLE_CONSTANT;
+                    prey.speed = ((data[12] << 8) | data[13]) / 1000.0;
+                    break;
+                case 15:
+                    prey.dir = data[9] - 48;
+                    prey.wang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
+                    prey.speed = ((data[13] << 8) | data[14]) / 1000.0;
+                    break;
+                case 16:
+                    prey.dir = data[9] - 48;
+                    prey.ang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
+                    prey.wang = ((data[13] << 16) | (data[14] << 8) | data[15]) * PI2 / ANGLE_CONSTANT;
+                    break;
+                case 18:
+                    prey.dir = data[9] - 48;
+                    prey.ang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
+                    prey.wang = ((data[13] << 16) | (data[14] << 8) | data[15]) * PI2 / ANGLE_CONSTANT;
+                    prey.speed = ((data[16] << 8) | data[17]) / 1000.0;
+                    break;
+            }
+        }
     }
 
     private void processRemoveFood(int[] data) {
@@ -485,17 +590,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         } else {
             view.log("add/remove snake wrong length!");
         }
-    }
-
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        view.log("closed: " + code + ", " + remote + ", " + reason);
-        view.onClose();
-    }
-
-    @Override
-    public void onError(Exception ex) {
-
     }
 
     void sendInitRequest(int snakeSkin, String nick) {

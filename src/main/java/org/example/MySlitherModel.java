@@ -23,6 +23,7 @@ public class MySlitherModel {
     Snake snake;
 
     Map<Integer, Snake> snakes = new LinkedHashMap<>();
+    Map<Integer, Prey> preys = new LinkedHashMap<>();
     Map<Integer, Food> foods = new LinkedHashMap<>();
 
     public MySlitherModel(double spangdv, double nsp1, double nsp2, double nsp3, double mamu1, double mamu2,
@@ -73,6 +74,21 @@ public class MySlitherModel {
 
     Snake getSnake(int snakeID) {
         return snakes.get(snakeID);
+    }
+    Prey getPrey(int id) {
+        return preys.get(id);
+    }
+
+    void removePrey(int id){
+        synchronized (view.modelLock){
+            preys.remove(id);
+        }
+    }
+
+    void addPrey(int id, Prey prey){
+        synchronized (view.modelLock){
+            preys.put(id, prey);
+        }
     }
 
     int getSnakeLength(int bodyLength, double fillAmount) {
