@@ -8,10 +8,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.TimerTask;
 import java.util.Timer;
 
@@ -360,7 +358,7 @@ public class MySlitherJFrame extends JFrame {
         kills.setText(String.valueOf(newKills));
     }
 
-    void setHighscoreData(int row, String name, int length, boolean highlighted) {
+    void setHighScoreData(int row, String name, int length, boolean highlighted) {
         highScoreList.setValueAt(highlighted ? "<html><b>" + length + "</b></html>" : length, row, 0);
         highScoreList.setValueAt(highlighted ? "<html><b>" + name + "</b></html>" : name, row, 1);
     }

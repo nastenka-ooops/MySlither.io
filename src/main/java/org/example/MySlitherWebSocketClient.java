@@ -363,12 +363,13 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                     | (data[cursorPosition + 4])) / ANGLE_CONSTANT;
             int nameLength = data[cursorPosition + 6];
             StringBuilder name = new StringBuilder(nameLength);
-            for (int i = 0; i < nameLength; i++) {
+            for (int i = 0; i < nameLength && cursorPosition + 7 + i < data.length; i++) {
                 name.append((char) data[cursorPosition + 7 + i]);
             }
-            view.setHighscoreData(rank, name.toString(), model.getSnakeLength(bodyLength, bodyPartFam), ownRank == rank);
             rank++;
-            cursorPosition = nameLength + 7;
+            cursorPosition += nameLength + 7;
+            view.setHighScoreData(rank-1, name.toString(), model.getSnakeLength(bodyLength, bodyPartFam),
+                    ownRank == rank);
         }
         view.log("leaderboard is set");
     }

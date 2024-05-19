@@ -75,6 +75,11 @@ public class MySlitherModel {
     Snake getSnake(int snakeID) {
         return snakes.get(snakeID);
     }
+
+    int getSnakeLength(int bodyLength, double fillAmount) {
+        bodyLength = Math.min(bodyLength, mscps);
+        return (int) (15 * (fpsls[bodyLength] + fillAmount * fmlts[bodyLength]) - 20);
+    }
     Prey getPrey(int id) {
         return preys.get(id);
     }
@@ -89,11 +94,6 @@ public class MySlitherModel {
         synchronized (view.modelLock){
             preys.put(id, prey);
         }
-    }
-
-    int getSnakeLength(int bodyLength, double fillAmount) {
-        bodyLength = Math.min(bodyLength, mscps);
-        return (int) (15 * (fpsls[bodyLength] + fillAmount * fmlts[bodyLength]) - 20);
     }
 
     void addSector(int x, int y) {
