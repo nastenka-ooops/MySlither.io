@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -29,6 +28,8 @@ public class MySlitherWebSocketClient extends WebSocketClient {
     private MySlitherModel model;
 
     private byte[] initRequest;
+
+    private boolean waitingForPong;
 
     static {
         HEADER.put("Origin", "http://slither.io");
@@ -82,7 +83,8 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                 processUpdateFam(data);
                 break;
             case 'r':
-
+                processRemoveSnakePart(data);
+                break;
             case 'g':
             case 'G':
             case 'n':
@@ -90,20 +92,40 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                 processUpdateSnakePosition(data, cmd);
                 break;
             case 'l':
+                processLeaderboard(data);
+                break;
             case 'v':
+                processDead(data);
+                break;
             case 'w':
+                processRemoveSector(data);
+                break;
             case 'W':
+                processAddSector(data);
+                break;
             case 'm':
+                processGlobalHighScore(data);
+                break;
             case 'p':
+                processPong(data);
+                break;
             case 'u':
+                processUpdateMinimap(data);
+                break;
             case 's':
                 processAddRemoveSnake(data);
                 break;
             case 'F':
             case 'b':
             case 'f':
+                processAddFood(data, cmd);
+                break;
             case 'c':
+                processRemoveFood(data);
+                break;
             case 'j':
+                processUpdatePrey(data);
+                break;
             case 'y':
             case 'o':
             case 'k':
@@ -111,15 +133,166 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
     }
 
+    private void processUpdatePrey(int[] data) {
+
+    }
+
+    private void processRemoveFood(int[] data) {
+        if (data.length != 7 && data.length != 9) {
+            view.log("remove food wrong length!");
+            return;
+        }
+
+        int x = (data[3] << 8) | data[4];
+        int y = (data[5] << 8) | data[6];
+
+        model.removeFood(x, y);
+    }
+
+    private void processAddFood(int[] data, char cmd) {
+        boolean isAllowMultipleEntries = cmd == 'F';
+        boolean isFastSpawn = cmd != 'f';
+
+        if ((!isAllowMultipleEntries && data.length != 9)
+                || (isAllowMultipleEntries && data.length < 9)
+                || ((data.length - 9) % 6 != 0)) {
+            view.log("add food wrong length!");
+            return;
+        }
+
+        for (int i = 8; i < data.length; i += 6) {
+            int x = (data[i - 4] << 8) | data[i - 3];
+            int y = (data[i - 2] << 8) | data[i - 1];
+            double size = data[i] / 5.0;
+            model.addFood(x, y, size, isFastSpawn);
+        }
+    }
+
+    private void processUpdateMinimap(int[] data) {
+        //TODO make realization
+    }
+
+    private void processPong(int[] data) {
+        if (data.length != 3) {
+            view.log("pong wrong length!");
+            return;
+        }
+
+        waitingForPong = false;
+    }
+
+    private void processGlobalHighScore(int[] data) {
+        if (data.length < 10) {
+            view.log("add sector wrong length!");
+            return;
+        }
+
+        int bodyLength = (data[3] << 16) | (data[4] << 8) | data[5];
+        double fam = ((data[6] << 16) | (data[7] << 8) | data[8]) / ANGLE_CONSTANT;
+
+        int nameLength = data[9];
+        StringBuilder name = new StringBuilder(nameLength);
+        for (int i = 0; i < nameLength; i++) {
+            name.append((char) data[10 + i]);
+        }
+
+        StringBuilder message = new StringBuilder();
+        for (int i = 0; i < data.length - 10 - nameLength; i++) {
+            message.append((char) data[10 + nameLength + i]);
+        }
+
+        view.log("Received Highscore of the day: " + name + " (" +
+                model.getSnakeLength(bodyLength, fam) + "): " + message);
+    }
+
+    private void processRemoveSector(int[] data) {
+        if (data.length != 5) {
+            view.log("add sector wrong length!");
+            return;
+        }
+        int sectorX = data[3];
+        int sectorY = data[4];
+        model.addSector(sectorX, sectorY);
+    }
+
+    private void processAddSector(int[] data) {
+        if (data.length != 5) {
+            view.log("remove sector wrong length!");
+            return;
+        }
+        int sectorX = data[3];
+        int sectorY = data[4];
+        model.removeSector(sectorX, sectorY);
+    }
+
+    private void processDead(int[] data) {
+        if (data.length != 4) {
+            view.log("dead wrong length!");
+            return;
+        }
+        int deathReason = data[3];
+        switch (deathReason) {
+            case 0 -> view.log("You died.");
+            case 1 -> view.log("You've achieved a new record!");
+            case 2 -> view.log("Death reason 2, unknown");
+            default -> view.log("invalid death reason: " + deathReason + "!");
+        }
+    }
+
+    private void processLeaderboard(int[] data) {
+        if (data.length < 8 + 10 * 7) {
+            view.log("leaderboard wrong length!");
+            return;
+        }
+
+        int ownRank = (data[4] << 8) | (data[5]);
+        int playersCount = (data[6] << 8) | (data[7]);
+
+        view.setRank(ownRank, playersCount);
+
+        int rank = 0;
+        int cursorPosition = 8;
+        while (cursorPosition + 6 < data.length) {
+            int bodyLength = (data[cursorPosition] << 8) | (data[cursorPosition + 1]);
+            double bodyPartFam = ((data[cursorPosition + 2] << 16) | (data[cursorPosition + 3] << 8)
+                    | (data[cursorPosition + 4])) / ANGLE_CONSTANT;
+            int nameLength = data[cursorPosition + 6];
+            StringBuilder name = new StringBuilder(nameLength);
+            for (int i = 0; i < nameLength; i++) {
+                name.append((char) data[cursorPosition + 7 + i]);
+            }
+            view.setHighscoreData(rank, name.toString(), model.getSnakeLength(bodyLength, bodyPartFam), ownRank == rank);
+            rank++;
+            cursorPosition = nameLength + 7;
+        }
+        view.log("leaderboard is set");
+    }
+
+    private void processRemoveSnakePart(int[] data) {
+        if (data.length != 8 && data.length != 5) {
+            view.log("remove snake part wrong length!");
+            return;
+        }
+        int snakeId = (data[3] << 8) | (data[4]);
+        synchronized (view.modelLock) {
+            Snake snake = model.getSnake(snakeId);
+            if (data.length == 8) {
+                snake.setFam(((data[5] << 16) | (data[6] << 8) | (data[7])) / ANGLE_CONSTANT);
+            }
+            snake.body.pollLast();
+        }
+    }
+
     private void processUpdateFam(int[] data) {
-        if (data.length!=8){
+        if (data.length != 8) {
             view.log("update fam wrong length!");
             return;
         }
         int snakeId = (data[3] << 8) | (data[4]);
-        synchronized (view.modelLock){
+        synchronized (view.modelLock) {
             Snake snake = model.getSnake(snakeId);
             snake.setFam(((data[5] << 16) | (data[6] << 8) | (data[7])) / ANGLE_CONSTANT);
+            view.log("newFam " + snake.getFam());
         }
     }
 
@@ -135,15 +308,15 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         double newWang = -1;
         double newSpeed = -1;
 
-        if (data.length==8){
+        if (data.length == 8) {
             newDir = cmd == 'e' ? 1 : 2;
 
             newAng = getNewAngle(data[5]);
             newWang = getNewAngle(data[6]);
             newSpeed = getNewSpeed(data[7]);
 
-        } else if (data.length==7){
-            switch (cmd){
+        } else if (data.length == 7) {
+            switch (cmd) {
                 case 'e':
                     newAng = getNewAngle(data[5]);
                     newSpeed = getNewSpeed(data[6]);
@@ -168,8 +341,8 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                     view.log("update body-parts invalid cmd/length: " + cmd + ", " + data.length);
                     return;
             }
-        } else if (data.length==6){
-            switch (cmd){
+        } else if (data.length == 6) {
+            switch (cmd) {
                 case 'e':
                     newAng = getNewAngle(data[5]);
                     break;
@@ -189,27 +362,31 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             }
         }
 
-        synchronized (view.modelLock){
+        synchronized (view.modelLock) {
             Snake snake = model.getSnake(snakeId);
 
-            if (newDir!=-1){
-                snake.dir=newDir;
+            if (newDir != -1) {
+                snake.dir = newDir;
             }
-            if (newAng!=-1){
+            if (newAng != -1) {
                 snake.ang = newAng;
             }
-            if (newWang!=-1){
+            if (newWang != -1) {
                 snake.wang = newWang;
             }
-            if (newSpeed!=-1){
+            if (newSpeed != -1) {
                 snake.speed = newSpeed;
             }
+
+            view.log("newDir " + snake.dir + " newAng " + snake.ang + " newWang " + snake.wang +
+                    " newSpeed " + snake.speed);
         }
     }
 
     private double getNewAngle(int angle) {
         return angle * PI2 / 256;
     }
+
     private double getNewSpeed(int speed) {
         return speed / 18.0;
     }
@@ -245,7 +422,7 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             snake.x = newX;
             snake.y = newY;
 
-            view.log("snake was moved to x " + snake.x + " y "+ snake.y);
+            view.log("snake was moved to x " + snake.x + " y " + snake.y);
             if (isNewBodyPart)
                 view.log("new bode part was add");
         }

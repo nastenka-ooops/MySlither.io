@@ -359,4 +359,9 @@ public class MySlitherJFrame extends JFrame {
     void setKills(int newKills){
         kills.setText(String.valueOf(newKills));
     }
+
+    void setHighscoreData(int row, String name, int length, boolean highlighted) {
+        highScoreList.setValueAt(highlighted ? "<html><b>" + length + "</b></html>" : length, row, 0);
+        highScoreList.setValueAt(highlighted ? "<html><b>" + name + "</b></html>" : name, row, 1);
+    }
 }
