@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +16,9 @@ public class MySlitherCanvas extends JPanel {
     private static final Color FOREGROUND_COLOR = new Color(0xA9B7C6);
     private static final Color SECTOR_COLOR = new Color(0x803C3F41);
     private static final Color FOOD_COLOR = new Color(0x803664);
+    private static final Color SNAKE_COLOR = new Color(0x287BDE);
+    private static final Color OWN_SNAKE_COLOR = new Color(0x39AFFF);
+
     private final int MAX_ZOOM = 18;
     private final int MIN_ZOOM = -2;
 
@@ -102,6 +107,57 @@ public class MySlitherCanvas extends JPanel {
             });
 
 
+            //TODO add nick
+            //Paint snakes
+            oldStroke = g.getStroke();
+            model.snakes.values().forEach(snake -> {
+                if (snake.body.size() >= 2) {
+                    double thickness = 16 + snake.body.size() / 4.0;
+                    g.setColor(snake == model.snake ? OWN_SNAKE_COLOR : SNAKE_COLOR);
+                    g.setStroke(new BasicStroke((float) thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+
+                    double totalLength = 0;
+                    double lastX = 0;
+                    double lastY = 0;
+
+                    // calculate total length
+                    for (SnakeBodyPart bodyPart : snake.body) {
+                        if (bodyPart != snake.body.getFirst()) {
+                            totalLength += Math.sqrt(Math.pow((bodyPart.x - lastX), 2) +
+                                    Math.pow((bodyPart.y - lastY), 2));
+                        }
+                        if (bodyPart != snake.body.getLast()) {
+                            lastX = bodyPart.x;
+                            lastY = bodyPart.y;
+                        }
+                    }
+
+
+                    //Drawing snake path
+                    Path2D.Double snakePath = new Path2D.Double();
+                    snakePath.moveTo(snake.x, snake.y);
+
+                    lastX = snake.x;
+                    lastY = snake.y;
+
+                    for (SnakeBodyPart bodyPart : snake.body) {
+                        double partLength = Math.sqrt(Math.pow((bodyPart.x - lastX),2) +
+                                Math.pow((bodyPart.y - lastY), 2));
+                        if (partLength>totalLength){
+                            snakePath.lineTo(lastX + (totalLength/partLength)*(bodyPart.x-lastX),
+                                    lastY + (totalLength/partLength)*(bodyPart.y)-lastY);
+                            break;
+                        }
+                        snakePath.lineTo(bodyPart.x, bodyPart.y);
+                        totalLength -= partLength;
+                        lastX = bodyPart.x;
+                        lastY = bodyPart.y;
+                    }
+
+                    g.draw(snakePath);
+                }
+            });
         }
     }
 }
