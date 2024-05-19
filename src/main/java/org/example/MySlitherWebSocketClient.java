@@ -79,6 +79,8 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                 processUpdateBodyparts(data, cmd);
                 break;
             case 'h':
+                processUpdateFam(data);
+                break;
             case 'r':
 
             case 'g':
@@ -109,6 +111,18 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
     }
 
+    private void processUpdateFam(int[] data) {
+        if (data.length!=8){
+            view.log("update fam wrong length!");
+            return;
+        }
+        int snakeId = (data[3] << 8) | (data[4]);
+        synchronized (view.modelLock){
+            Snake snake = model.getSnake(snakeId);
+            snake.setFam(((data[5] << 16) | (data[6] << 8) | (data[7])) / ANGLE_CONSTANT);
+        }
+    }
+
     private void processUpdateBodyparts(int[] data, char cmd) {
         if (data.length != 8 && data.length != 7 && data.length != 6) {
             view.log("update body-parts wrong length!");
@@ -116,7 +130,88 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
 
         int snakeId = (data[3] << 8) | (data[4]);
+        int newDir = -1;
+        double newAng = -1;
+        double newWang = -1;
+        double newSpeed = -1;
 
+        if (data.length==8){
+            newDir = cmd == 'e' ? 1 : 2;
+
+            newAng = getNewAngle(data[5]);
+            newWang = getNewAngle(data[6]);
+            newSpeed = getNewSpeed(data[7]);
+
+        } else if (data.length==7){
+            switch (cmd){
+                case 'e':
+                    newAng = getNewAngle(data[5]);
+                    newSpeed = getNewSpeed(data[6]);
+                    break;
+                case 'E':
+                    newDir = 1;
+                    newWang = getNewAngle(data[5]);
+                    newSpeed = getNewSpeed(data[6]);
+                case '3':
+                    newDir = 1;
+                    newAng = getNewAngle(data[5]);
+                    newWang = getNewAngle(data[6]);
+                case '4':
+                    newDir = 2;
+                    newWang = getNewAngle(data[5]);
+                    newSpeed = getNewSpeed(data[6]);
+                case '5':
+                    newDir = 2;
+                    newAng = getNewAngle(data[5]);
+                    newWang = getNewAngle(data[6]);
+                default:
+                    view.log("update body-parts invalid cmd/length: " + cmd + ", " + data.length);
+                    return;
+            }
+        } else if (data.length==6){
+            switch (cmd){
+                case 'e':
+                    newAng = getNewAngle(data[5]);
+                    break;
+                case 'E':
+                    newDir = 1;
+                    newWang = getNewAngle(data[5]);
+                case '3':
+                    newSpeed = getNewSpeed(data[5]);
+                case '4':
+                    newDir = 2;
+                    newWang = getNewAngle(data[5]);
+                case '5':
+                    newSpeed = getNewSpeed(data[5]);
+                default:
+                    view.log("update body-parts invalid cmd/length: " + cmd + ", " + data.length);
+                    return;
+            }
+        }
+
+        synchronized (view.modelLock){
+            Snake snake = model.getSnake(snakeId);
+
+            if (newDir!=-1){
+                snake.dir=newDir;
+            }
+            if (newAng!=-1){
+                snake.ang = newAng;
+            }
+            if (newWang!=-1){
+                snake.wang = newWang;
+            }
+            if (newSpeed!=-1){
+                snake.speed = newSpeed;
+            }
+        }
+    }
+
+    private double getNewAngle(int angle) {
+        return angle * PI2 / 256;
+    }
+    private double getNewSpeed(int speed) {
+        return speed / 18.0;
     }
 
     private void processUpdateSnakePosition(int[] data, char cmd) {
