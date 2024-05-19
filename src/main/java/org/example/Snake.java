@@ -7,21 +7,21 @@ public class Snake {
     final String name;
     double x, y;
     int dir; // direction
-    double wang, arg; // snake movement
-    double sp, tsp; // speed and temporary speed
+    double wang, ang; // snake movement
+    double speed, tsp; // speed and temporary speed
     private double fam; // acceleration factor
     final Deque<SnakeBodyPart> body;
     private final MySlitherModel model;
 
-    public Snake(int id, String name, double x, double y, double wang, double arg, double sp,
+    public Snake(int id, String name, double x, double y, double wang, double ang, double speed,
                  double fam, Deque<SnakeBodyPart> body, MySlitherModel model) {
         this.id = id;
         this.name = name;
         this.x = x;
         this.y = y;
         this.wang = wang;
-        this.arg = arg;
-        this.sp = sp;
+        this.ang = ang;
+        this.speed = speed;
         this.fam = fam;
         this.body = body;
         this.model = model;
@@ -38,7 +38,7 @@ public class Snake {
     }
     // Get turning speed percentage
     double getSpang() {
-        return Math.min(sp / model.spangdv, 1);
+        return Math.min(speed / model.spangdv, 1);
     }
     // get the factor of snake speed
     private double getFsp() {

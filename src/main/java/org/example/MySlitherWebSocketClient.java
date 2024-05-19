@@ -13,11 +13,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.example.MySlitherModel.PI2;
+
 public class MySlitherWebSocketClient extends WebSocketClient {
+    private static final double ANGLE_CONSTANT = 16777215;
     private static final Map<String, String> HEADER = new LinkedHashMap<>();
 
     private final MySlitherJFrame view;
@@ -50,7 +55,7 @@ public class MySlitherWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(ByteBuffer buffer) {
         byte[] b = buffer.array();
-        if (b.length > 3) {
+        if (b.length < 3) {
             view.log("too short");
             return;
         }
@@ -59,16 +64,160 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             data[i] = b[i] & 0xFF;
         }
         char cmd = (char) data[2];
-        switch (cmd){
+        switch (cmd) {
             case '6':
                 processPreInitResponse(data);
                 break;
+            case 'a':
+                processInitResponse(data);
+                break;
+            case 'e':
+            case 'E':
+            case '3':
+            case '4':
+            case '5':
+                processUpdateBodyparts(data, cmd);
+                break;
+            case 'h':
+            case 'r':
+
+            case 'g':
+            case 'G':
+            case 'n':
+            case 'N':
+                processUpdateSnakePosition(data, cmd);
+                break;
+            case 'l':
+            case 'v':
+            case 'w':
+            case 'W':
+            case 'm':
+            case 'p':
+            case 'u':
+            case 's':
+                processAddRemoveSnake(data);
+                break;
+            case 'F':
+            case 'b':
+            case 'f':
+            case 'c':
+            case 'j':
+            case 'y':
+            case 'o':
+            case 'k':
+
+        }
+    }
+
+    private void processUpdateBodyparts(int[] data, char cmd) {
+        if (data.length != 8 && data.length != 7 && data.length != 6) {
+            view.log("update body-parts wrong length!");
+            return;
+        }
+
+        int snakeId = (data[3] << 8) | (data[4]);
+
+    }
+
+    private void processUpdateSnakePosition(int[] data, char cmd) {
+        boolean isAbsoluteCoordinates = (cmd == 'g' || cmd == 'n');
+        boolean isNewBodyPart = (cmd == 'n' || cmd == 'N');
+
+        if (data.length != 5 + (isAbsoluteCoordinates ? 4 : 2) + (isNewBodyPart ? 3 : 0)) {
+            view.log("update snake body wrong length!");
+            return;
+        }
+
+        int snakeId = (data[3] << 8) | (data[4]);
+
+        synchronized (view.modelLock) {
+            Snake snake = model.getSnake(snakeId);
+            SnakeBodyPart head = snake.body.getFirst();
+
+            double newX = isAbsoluteCoordinates ? ((data[5] << 8) | (data[6])) : (data[5] - 128 + head.x);
+            double newY = isAbsoluteCoordinates ? ((data[7] << 8) | (data[8])) : (data[6] - 128 + head.y);
+
+            if (isNewBodyPart) {
+                snake.setFam(((data[isAbsoluteCoordinates ? 9 : 7] << 16)
+                        | (data[isAbsoluteCoordinates ? 10 : 8] << 8)
+                        | data[isAbsoluteCoordinates ? 11 : 9]) / ANGLE_CONSTANT);
+            } else {
+                snake.body.pollLast();
+            }
+
+            snake.body.addFirst(new SnakeBodyPart(newX, newY));
+
+            snake.x = newX;
+            snake.y = newY;
+
+            view.log("snake was moved to x " + snake.x + " y "+ snake.y);
+            if (isNewBodyPart)
+                view.log("new bode part was add");
+        }
+    }
+
+    private void processAddRemoveSnake(int[] data) {
+        if (data.length == 6) {
+            int id = (data[3] << 8) | (data[4]);
+            model.removeSnake(id);
+            view.log("add snake with id " + id);
+        } else if (data.length >= 34) {
+            int snakeId = (data[3] << 8) | (data[4]);
+
+            double ang = ((data[5] << 16) | (data[6] >> 8) | data[7]) * PI2 / ANGLE_CONSTANT;
+            double wang = ((data[9] << 16) | (data[10] >> 8) | data[11]) * PI2 / ANGLE_CONSTANT;
+
+            double speed = ((data[12] << 8) | (data[13])) / 1000.0;
+            //Snake last body part fullness
+            double fam = ((data[14] << 16) | (data[15] >> 8) | data[16]) / ANGLE_CONSTANT;
+
+            //TODO do smth with this
+            int skin = data[17];
+
+            double x = ((data[18] << 16) | (data[19] << 8) | (data[20])) / 5.0;
+            double y = ((data[21] << 16) | (data[22] << 8) | (data[23])) / 5.0;
+
+            int nameLength = data[24];
+            StringBuilder name = new StringBuilder(nameLength);
+            for (int i = 0; i < nameLength; i++) {
+                name.append((char) data[24 + i]);
+            }
+
+            //TODO and with this
+            int customSkinDataLength = data[25 + nameLength];
+            StringBuilder customSkinDataName = new StringBuilder(customSkinDataLength);
+            for (int i = 0; i < customSkinDataLength; i++) {
+                customSkinDataName.append((char) data[25 + nameLength + i]);
+            }
+
+            double currentBodyPartX = ((data[26 + nameLength + customSkinDataLength] << 16)
+                    | (data[27 + nameLength + customSkinDataLength] << 8)
+                    | (data[28 + nameLength + customSkinDataLength])) / 5.0;
+            double currentBodyPartY = ((data[29 + nameLength + customSkinDataLength] << 16)
+                    | (data[30 + nameLength + customSkinDataLength] << 8)
+                    | (data[21 + nameLength + customSkinDataLength])) / 5.0;
+
+            Deque<SnakeBodyPart> body = new ArrayDeque<>();
+            body.addFirst(new SnakeBodyPart(currentBodyPartX, currentBodyPartY));
+
+            for (int nextSnakeBodyPart = 32 + nameLength + customSkinDataLength;
+                 nextSnakeBodyPart + 1 < data.length; nextSnakeBodyPart += 2) {
+                currentBodyPartX += (data[nextSnakeBodyPart] - 127) / 2.0;
+                currentBodyPartY += (data[nextSnakeBodyPart + 1] - 127) / 2.0;
+                body.addFirst(new SnakeBodyPart(currentBodyPartX, currentBodyPartY));
+            }
+
+            model.addSnake(snakeId, name.toString(), x, y, ang, wang, speed, fam, body);
+            view.log("add snake with id " + snakeId + " name " + name + " x " + x + " y " + y + " ang " + ang + " wang " + wang +
+                    " speed " + speed + " fam " + fam + " and body " + body.size());
+        } else {
+            view.log("add/remove snake wrong length!");
         }
     }
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        view.log("closed: "+code+", "+remote+", "+reason);
+        view.log("closed: " + code + ", " + remote + ", " + reason);
         view.onClose();
     }
 
@@ -99,13 +248,51 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         send(new byte[]{99});
     }
 
-    void processPreInitResponse(int[] data){
+    void processPreInitResponse(int[] data) {
         view.log("sending decrypted, manipulated secret");
         send(decodeSecret(data));
 
         view.log("send init-request");
         send(initRequest);
     }
+
+    void processInitResponse(int[] data) {
+        if (data.length != 26) {
+            view.log("init response wrong length!");
+            return;
+        }
+        int gameRadius = (data[3] << 16) | (data[4] << 8) | (data[5]);
+        //get mscps (maximum snake length in body parts units)
+        int mscps = (data[6] << 8) | data[7];
+        int sectorSize = (data[8] << 8) | data[9];
+        // get spangdv (value / 10) (coef. to calculate angular speed change depending snake speed)
+        double spangdv = data[12] / 10.0;
+        // nsp1 (value / 100) (Maybe nsp stands for "node speed"?)
+        double nsp1 = ((data[13] << 8) | data[14]) / 100.0;
+        double nsp2 = ((data[15] << 8) | data[16]) / 100.0;
+        double nsp3 = ((data[17] << 8) | data[18]) / 100.0;
+        // get mamu (value / 1E3) (basic snake angular speed)
+        double mamu1 = ((data[19] << 8) | data[20]) / 1000.0;
+        //manu2 (value / 1E3) (angle in rad per 8ms at which prey can turn)
+        double mamu2 = ((data[21] << 8) | data[22]) / 1000.0;
+        //sct is a snake body parts count (length) taking values between [2 .. mscps].
+        //fpsls[mscps] contains snake volume (score) to snake length in body parts units. 1/fmlts[mscps] contains
+        // body part volume (score) to certain snake length.
+        double cst = ((data[23] << 8) | data[24]) / 1000.0;
+        int protocolVersion = data[25];
+
+        if (protocolVersion != 11) {
+            view.log("wrong protocol version (" + protocolVersion + ")");
+            return;
+        }
+
+        model = new MySlitherModel(spangdv, nsp1, nsp2, nsp3, mamu1, mamu2, gameRadius, sectorSize, cst, mscps, view);
+        view.log("add game model " + spangdv + " nps1 " + nsp1 + " nps2 " + nsp2 + " nps3 " + nsp3 + " mamu1 " + mamu1 +
+                " mamu2 " + mamu2 + " dame radius " + gameRadius + " sector size " + sectorSize + " cst " + cst + " mscps " + mscps);
+        view.setModel(model);
+        view.setKills(0);
+    }
+
     private static byte[] decodeSecret(int[] secret) {
 
         byte[] result = new byte[24];
@@ -143,7 +330,7 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         return result;
     }
 
-    static URI[] getServerList(){
+    static URI[] getServerList() {
         String i33628_String;
         try {
             HttpURLConnection i49526_HttpURLConnection = (HttpURLConnection)

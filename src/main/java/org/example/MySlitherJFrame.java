@@ -353,4 +353,10 @@ public class MySlitherJFrame extends JFrame {
             kills.setText(null);
         }
     }
+    void setRank(int newRank, int playerCount){
+        rank.setText(newRank+"/"+playerCount);
+    }
+    void setKills(int newKills){
+        kills.setText(String.valueOf(newKills));
+    }
 }
