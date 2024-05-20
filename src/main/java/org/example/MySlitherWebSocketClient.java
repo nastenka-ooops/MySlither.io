@@ -73,74 +73,27 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
         char cmd = (char) data[2];
         switch (cmd) {
-            case '6':
-                processPreInitResponse(data);
-                break;
-            case 'a':
-                processInitResponse(data);
-                break;
-            case 'e':
-            case 'E':
-            case '3':
-            case '4':
-            case '5':
-                processUpdateBodyparts(data, cmd);
-                break;
-            case 'h':
-                processUpdateFam(data);
-                break;
-            case 'r':
-                processRemoveSnakePart(data);
-                break;
-            case 'g':
-            case 'G':
-            case 'n':
-            case 'N':
-                processUpdateSnakePosition(data, cmd);
-                break;
-            case 'l':
-                processLeaderboard(data);
-                break;
-            case 'v':
-                processDead(data);
-                break;
-            case 'w':
-                processRemoveSector(data);
-                break;
-            case 'W':
-                processAddSector(data);
-                break;
-            case 'm':
-                processGlobalHighScore(data);
-                break;
-            case 'p':
-                processPong(data);
-                break;
-            case 'u':
-                processUpdateMinimap(data);
-                break;
-            case 's':
-                processAddRemoveSnake(data);
-                break;
-            case 'F':
-            case 'b':
-            case 'f':
-                processAddFood(data, cmd);
-                break;
-            case 'c':
-                processRemoveFood(data);
-                break;
-            case 'j':
-                processUpdatePrey(data);
-                break;
-            case 'y':
-                processAddRemovePrey(data);
-                break;
-           // case 'o':
-            case 'k':
-                processKill(data);
-                break;
+            case '6' -> processPreInitResponse(data);
+            case 'a' -> processInitResponse(data);
+            case 'e', 'E', '3', '4', '5' -> processUpdateBodyparts(data, cmd);
+            case 'h' -> processUpdateFam(data);
+            case 'r' -> processRemoveSnakePart(data);
+            case 'g', 'G', 'n', 'N' -> processUpdateSnakePosition(data, cmd);
+            case 'l' -> processLeaderboard(data);
+            case 'v' -> processDead(data);
+            case 'w' -> processRemoveSector(data);
+            case 'W' -> processAddSector(data);
+            case 'm' -> processGlobalHighScore(data);
+            case 'p' -> processPong(data);
+            case 'u' -> processUpdateMinimap(data);
+            case 's' -> processAddRemoveSnake(data);
+            case 'F', 'b', 'f' -> processAddFood(data, cmd);
+            case 'c' -> processRemoveFood(data);
+            case 'j' -> processUpdatePrey(data);
+            case 'y' -> processAddRemovePrey(data);
 
+            // case 'o':
+            case 'k' -> processKill(data);
         }
     }
 
@@ -233,36 +186,32 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             prey.y = y;
 
             switch (data.length) {
-                case 11:
-                    prey.speed = ((data[9] << 8) | data[10]) / 1000.0;
-                    break;
-                case 12:
-                    prey.ang = ((data[9] << 16) | (data[10] << 8) | data[11]) * PI2 / ANGLE_CONSTANT;
-                    break;
-                case 13:
+                case 11 -> prey.speed = ((data[9] << 8) | data[10]) / 1000.0;
+                case 12 -> prey.ang = ((data[9] << 16) | (data[10] << 8) | data[11]) * PI2 / ANGLE_CONSTANT;
+                case 13 -> {
                     prey.dir = data[9] - 48;
                     prey.wang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
-                    break;
-                case 14:
+                }
+                case 14 -> {
                     prey.ang = ((data[9] << 16) | (data[10] << 8) | data[11]) * PI2 / ANGLE_CONSTANT;
                     prey.speed = ((data[12] << 8) | data[13]) / 1000.0;
-                    break;
-                case 15:
+                }
+                case 15 -> {
                     prey.dir = data[9] - 48;
                     prey.wang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
                     prey.speed = ((data[13] << 8) | data[14]) / 1000.0;
-                    break;
-                case 16:
+                }
+                case 16 -> {
                     prey.dir = data[9] - 48;
                     prey.ang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
                     prey.wang = ((data[13] << 16) | (data[14] << 8) | data[15]) * PI2 / ANGLE_CONSTANT;
-                    break;
-                case 18:
+                }
+                case 18 -> {
                     prey.dir = data[9] - 48;
                     prey.ang = ((data[10] << 16) | (data[11] << 8) | data[12]) * PI2 / ANGLE_CONSTANT;
                     prey.wang = ((data[13] << 16) | (data[14] << 8) | data[15]) * PI2 / ANGLE_CONSTANT;
                     prey.speed = ((data[16] << 8) | data[17]) / 1000.0;
-                    break;
+                }
             }
         }
     }
@@ -508,9 +457,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             if (newSpeed != -1) {
                 snake.speed = newSpeed;
             }
-
-            view.log("newDir " + snake.dir + " newAng " + snake.ang + " newWang " + snake.wang +
-                    " newSpeed " + snake.speed);
         }
     }
 
@@ -553,7 +499,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             snake.x = newX;
             snake.y = newY;
 
-            view.log("snake was moved to x " + snake.x + " y " + snake.y);
             if (isNewBodyPart)
                 view.log("new bode part was add");
         }
@@ -609,8 +554,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             }
 
             model.addSnake(snakeId, name.toString(), view.SNAKES.get(skin), x, y, ang, wang, speed, fam, body);
-            view.log("add snake with id " + snakeId + " name " + name + " x " + x + " y " + y + " ang " + ang + " wang " + wang +
-                    " speed " + speed + " fam " + fam + " and body " + body.size());
         } else {
             view.log("add/remove snake wrong length!");
         }
@@ -677,8 +620,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
 
         model = new MySlitherModel(spangdv, nsp1, nsp2, nsp3, mamu1, mamu2, gameRadius, sectorSize, cst, mscps, view);
-        view.log("add game model " + spangdv + " nps1 " + nsp1 + " nps2 " + nsp2 + " nps3 " + nsp3 + " mamu1 " + mamu1 +
-                " mamu2 " + mamu2 + " dame radius " + gameRadius + " sector size " + sectorSize + " cst " + cst + " mscps " + mscps);
         view.setModel(model);
         view.setKills(0);
     }

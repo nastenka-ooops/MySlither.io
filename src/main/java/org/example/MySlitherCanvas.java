@@ -123,11 +123,10 @@ public class MySlitherCanvas extends JPanel {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
 
-        if (!(graphics instanceof Graphics2D)) {
+        if (!(graphics instanceof Graphics2D g)) {
             return;
         }
 
-        Graphics2D g = (Graphics2D) graphics;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         OWN_SNAKE_BODY_COLOR = view.SNAKES.get(view.snake.getSelectedIndex());
