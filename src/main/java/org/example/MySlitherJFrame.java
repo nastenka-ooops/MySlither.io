@@ -64,7 +64,7 @@ public class MySlitherJFrame extends JFrame {
         getContentPane().setLayout(new BorderLayout());
 
         canvas = new MySlitherCanvas(this);
-        player = new Player("shmasty");
+        player = canvas.mouseInput;
 
         JPanel settings = new JPanel(new GridBagLayout());
 

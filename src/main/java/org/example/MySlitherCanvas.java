@@ -2,16 +2,19 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
-import java.nio.file.Path;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.Math.random;
+import static org.example.MySlitherModel.PI2;
 
 public class MySlitherCanvas extends JPanel {
     private final MySlitherJFrame view;
@@ -27,20 +30,38 @@ public class MySlitherCanvas extends JPanel {
     private static final float[] SNAKE_HALO_FRACTIONS = new float[]{0.5f, 1f};
     private static final Color[] SNAKE_HALO_COLORS = new Color[]{new Color(0x60287BDE, true), new Color(0x00287BDE, true)};
     private static final Color[] OWN_SNAKE_HALO_COLORS = new Color[]{new Color(0x6039AFFF, true), new Color(0x0039AFFF, true)};
-    private static final Color SNAKE_BODY_COLOR = new Color(0x6A8759);
+    // private static final Color SNAKE_BODY_COLOR = new Color(0x6A8759);
     private static final Color NAME_SHADOW_COLOR = new Color(0xC02B2B2B, true);
     private static final Font NAME_FONT = Font.decode("SansSerif-BOLD");
     private static Color OWN_SNAKE_BODY_COLOR = new Color(0xA5C261);
 
+    class MouseInput extends Player {
+        Double wang;
+        boolean boost;
+
+        public MouseInput() {
+            super("Mouse input");
+            this.wang = null;
+            this.boost = false;
+        }
+
+        private void readWang(MouseEvent event) {
+            wang = (Math.atan2((event.getY() - getHeight() / 2), (event.getX() - getWidth() / 2)) + PI2) % PI2;
+        }
+
+        @Override
+        public Wish action(MySlitherModel model) {
+            return new Wish(wang, boost);
+        }
+    }
 
     private final int MAX_ZOOM = 18;
     private final int MIN_ZOOM = -2;
 
-    Random random = new Random();
-
     private int zoom = 12;
 
     public ScheduledExecutorService repaintThread;
+    final MouseInput mouseInput = new MouseInput();
 
     public MySlitherCanvas(MySlitherJFrame view) {
         super();
@@ -53,6 +74,40 @@ public class MySlitherCanvas extends JPanel {
             zoom -= e.getWheelRotation();
             zoom = Math.max(zoom, MIN_ZOOM);
             zoom = Math.min(zoom, MAX_ZOOM);
+        });
+
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                mouseInput.readWang(e);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mouseInput.readWang(e);
+            }
+        });
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouseInput.boost = true;
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                mouseInput.boost = false;
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                mouseInput.readWang(e);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                mouseInput.wang = null;
+            }
         });
 
         GraphicsEnvironment localGraphicEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -91,11 +146,16 @@ public class MySlitherCanvas extends JPanel {
             AffineTransform oldTransform = g.getTransform();
             double scale;
 
-            g.translate(width / 2, height / 2);
-            scale = Math.pow(1.25, zoom + 1) * minDimension / (model.gameRadius * 2);
-            g.scale(scale, scale);
-            g.translate(-model.snake.x, -model.snake.y);
-
+            if (zoom == 0 || model.snake == null) {
+                g.translate((width - minDimension) / 2, (height - minDimension) / 2);
+                scale = 1d * minDimension / (model.gameRadius * 2);
+                g.scale(scale, scale);
+            } else {
+                g.translate(width / 2, height / 2);
+                scale = Math.pow(1.25, zoom + 1) * minDimension / (model.gameRadius * 2);
+                g.scale(scale, scale);
+                g.translate(-model.snake.x, -model.snake.y);
+            }
 
             //Paint sectors
             g.setColor(SECTOR_COLOR);
@@ -103,7 +163,7 @@ public class MySlitherCanvas extends JPanel {
                 for (int x = 0; x < model.sectors[y].length; x++) {
                     if (model.sectors[y][x]) {
                         g.fillRect(x * model.sectorSize + 1, y * model.sectorSize + 1,
-                                model.sectorSize-2, model.sectorSize-2);
+                                model.sectorSize - 2, model.sectorSize - 2);
                     }
                 }
             }
@@ -129,8 +189,8 @@ public class MySlitherCanvas extends JPanel {
                 if (preyRadius <= 0) {
                     return;
                 }
-                g.setPaint(new RadialGradientPaint((float) (prey.x - 0.5/scale),(float) (prey.y - 0.5 / scale),
-                        (float) (preyRadius*2), PREY_HALO_FRACTIONS , PREY_HALO_COLORS));
+                g.setPaint(new RadialGradientPaint((float) (prey.x - 0.5 / scale), (float) (prey.y - 0.5 / scale),
+                        (float) (preyRadius * 2), PREY_HALO_FRACTIONS, PREY_HALO_COLORS));
                 g.fillRect((int) Math.floor(prey.x - preyRadius * 2 - 1), (int) Math.floor(prey.y - preyRadius * 2 - 1),
                         (int) (preyRadius * 4 + 3), (int) (preyRadius * 4 + 3));
                 g.setColor(PREY_COLOR);
@@ -172,11 +232,11 @@ public class MySlitherCanvas extends JPanel {
                     lastY = snake.y;
 
                     for (SnakeBodyPart bodyPart : snake.body) {
-                        double partLength = Math.sqrt(Math.pow((bodyPart.x - lastX),2) +
+                        double partLength = Math.sqrt(Math.pow((bodyPart.x - lastX), 2) +
                                 Math.pow((bodyPart.y - lastY), 2));
-                        if (partLength>totalLength){
-                            snakePath.lineTo(lastX + (totalLength/partLength)*(bodyPart.x-lastX),
-                                    lastY + (totalLength/partLength)*(bodyPart.y)-lastY);
+                        if (partLength > totalLength) {
+                            snakePath.lineTo(lastX + (totalLength / partLength) * (bodyPart.x - lastX),
+                                    lastY + (totalLength / partLength) * (bodyPart.y) - lastY);
                             break;
                         }
                         snakePath.lineTo(bodyPart.x, bodyPart.y);
