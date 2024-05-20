@@ -322,6 +322,9 @@ public class MySlitherJFrame extends JFrame {
             kills.setText(null);
         }
     }
+    void setMap(boolean[] map) {
+        canvas.setMap(map);
+    }
 
     void setRank(int newRank, int playerCount) {
         rank.setText(newRank + "/" + playerCount);

@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,10 +31,12 @@ public class MySlitherCanvas extends JPanel {
     private static final float[] SNAKE_HALO_FRACTIONS = new float[]{0.5f, 1f};
     private static final Color[] SNAKE_HALO_COLORS = new Color[]{new Color(0x60287BDE, true), new Color(0x00287BDE, true)};
     private static final Color[] OWN_SNAKE_HALO_COLORS = new Color[]{new Color(0x6039AFFF, true), new Color(0x0039AFFF, true)};
-    // private static final Color SNAKE_BODY_COLOR = new Color(0x6A8759);
     private static final Color NAME_SHADOW_COLOR = new Color(0xC02B2B2B, true);
     private static final Font NAME_FONT = Font.decode("SansSerif-BOLD");
     private static Color OWN_SNAKE_BODY_COLOR = new Color(0xA5C261);
+    private static final Color MAP_COLOR = new Color(0xA0A9B7C6, true);
+    private static final Color MAP_POSITION_COLOR = new Color(0xE09E2927, true);
+    private boolean[] map;
 
     class MouseInput extends Player {
         Double wang;
@@ -117,6 +120,10 @@ public class MySlitherCanvas extends JPanel {
 
         repaintThread = Executors.newSingleThreadScheduledExecutor();
         repaintThread.scheduleAtFixedRate(this::repaint, 1, repaintDelay, TimeUnit.NANOSECONDS);
+    }
+
+    void setMap(boolean[] map) {
+        this.map = map;
     }
 
     @Override
@@ -298,8 +305,33 @@ public class MySlitherCanvas extends JPanel {
 
             g.setStroke(oldStroke);
             g.setTransform(oldTransform);
-            //TODO
+
             //Paint minimap
+            g.setColor(MAP_COLOR);
+            g.drawOval(width - 100, height - 100, 79, 79);
+            boolean[] currentMap = map;
+            if (currentMap != null) {
+                for (int i = 0; i < currentMap.length; i++) {
+                    if (currentMap[i]) {
+                        g.fillRect((i % 80) + width - 100, (i / 80) + height - 100, 1, 1);
+                    }
+                }
+            }
+            if (zoom != 0 && model.snake != null) {
+                double zoomScale = Math.pow(1.25, zoom + 1);
+                g.setColor(MAP_POSITION_COLOR);
+                oldStroke = g.getStroke();
+                g.setStroke(new BasicStroke(2));
+                g.draw(new Rectangle2D.Double(
+                        model.snake.x * 80 / (model.gameRadius * 2) - width / zoomScale / minDimension * 40 +
+                                width - 100,
+                        model.snake.y * 80 / (model.gameRadius * 2) - height / zoomScale / minDimension * 40 +
+                                height - 100,
+                        width / zoomScale / minDimension * 80,
+                        height / zoomScale / minDimension * 80
+                ));
+                g.setStroke(oldStroke);
+            }
         }
     }
 }

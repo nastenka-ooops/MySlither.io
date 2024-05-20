@@ -248,8 +248,29 @@ public class MySlitherWebSocketClient extends WebSocketClient {
     }
 
     private void processUpdateMinimap(int[] data) {
-        //TODO make realization
-    }
+        boolean[] map = new boolean[80 * 80];
+        int mapPos = 0;
+        for (int dataPos = 3; dataPos < data.length; dataPos++) {
+            int value = data[dataPos];
+            if (value >= 128) {
+                value -= 128;
+                mapPos += value;
+                if (mapPos >= map.length) {
+                    break;
+                }
+            } else {
+                for (int i = 0; i < 7; i++) {
+                    if ((value & (1 << (6 - i))) != 0) {
+                        map[mapPos] = true;
+                    }
+                    mapPos++;
+                    if (mapPos >= map.length) {
+                        break;
+                    }
+                }
+            }
+        }
+        view.setMap(map);    }
 
     private void processPong(int[] data) {
         if (data.length != 3) {
