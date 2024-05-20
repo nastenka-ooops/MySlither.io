@@ -1,5 +1,6 @@
 package org.example;
 
+import java.awt.*;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -61,10 +62,10 @@ public class MySlitherModel {
         }
     }
 
-    public void addSnake(int snakeId, String name, double x, double y, double ang, double wang, double speed, double fam,
+    public void addSnake(int snakeId, String name, Color skin, double x, double y, double ang, double wang, double speed, double fam,
                          Deque<SnakeBodyPart> body) {
         synchronized (view.modelLock) {
-            Snake newSnake = new Snake(snakeId, name, x, y, wang, ang, speed, fam, body, this);
+            Snake newSnake = new Snake(snakeId, name, skin, x, y, wang, ang, speed, fam, body, this);
             if (snake == null) {
                 snake = newSnake;
             }

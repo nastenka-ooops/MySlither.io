@@ -10,15 +10,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 public class MySlitherJFrame extends JFrame {
-    private static final String[] SNAKES = {"green"};
+    //private static final String[] SNAKES = {"green"};
+    Map<Integer, Color> SNAKES = new LinkedHashMap<>();
+    Random random = new Random();
 
     private final JTextField server, name;
-    private final JComboBox<String> snake;
+    public final JComboBox<String> snake;
     private final JCheckBox useRandomServer;
     private final JToggleButton connect;
     private final JLabel rank, kills;
@@ -40,6 +42,9 @@ public class MySlitherJFrame extends JFrame {
     public MySlitherJFrame() {
         super("MySlither.io");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        initColorMap();
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -67,7 +72,7 @@ public class MySlitherJFrame extends JFrame {
 
         name = new JTextField("shmastya", 16);
 
-        snake = new JComboBox<>(SNAKES);
+        snake = new JComboBox<>(SNAKES.values().stream().map(this::getColorName).toArray(String[]::new));
         snake.setMaximumRowCount(snake.getItemCount());
 
         useRandomServer = new JCheckBox("use random server", true);
@@ -361,5 +366,93 @@ public class MySlitherJFrame extends JFrame {
     void setHighScoreData(int row, String name, int length, boolean highlighted) {
         highScoreList.setValueAt(highlighted ? "<html><b>" + length + "</b></html>" : length, row, 0);
         highScoreList.setValueAt(highlighted ? "<html><b>" + name + "</b></html>" : name, row, 1);
+    }
+
+    void initColorMap(){
+        SNAKES.put(0, new Color(240, 255, 255)); // Azure
+        SNAKES.put(1, Color.RED);
+        SNAKES.put(2, Color.GREEN);
+        SNAKES.put(3, Color.BLUE);
+        SNAKES.put(4, Color.YELLOW);
+        SNAKES.put(5, Color.ORANGE);
+        SNAKES.put(6, Color.MAGENTA);
+        SNAKES.put(7, Color.CYAN);
+        SNAKES.put(8, Color.PINK);
+        SNAKES.put(9, Color.GRAY);
+        SNAKES.put(10, Color.BLACK);
+        SNAKES.put(11, new Color(128, 0, 0)); // Maroon
+        SNAKES.put(12, new Color(0, 128, 0)); // Dark Green
+        SNAKES.put(13, new Color(0, 0, 128)); // Navy
+        SNAKES.put(14, new Color(128, 128, 0)); // Olive
+        SNAKES.put(15, new Color(128, 0, 128)); // Purple
+        SNAKES.put(16, new Color(0, 128, 128)); // Teal
+        SNAKES.put(17, new Color(192, 192, 192)); // Silver
+        SNAKES.put(18, new Color(255, 165, 0)); // Orange
+        SNAKES.put(19, new Color(75, 0, 130)); // Indigo
+        SNAKES.put(20, new Color(255, 20, 147)); // Deep Pink
+        SNAKES.put(21, new Color(0, 255, 127)); // Spring Green
+        SNAKES.put(22, new Color(70, 130, 180)); // Steel Blue
+        SNAKES.put(23, new Color(255, 99, 71)); // Tomato
+        SNAKES.put(24, new Color(220, 20, 60)); // Crimson
+        SNAKES.put(25, new Color(46, 139, 87)); // Sea Green
+        SNAKES.put(26, new Color(0, 191, 255)); // Deep Sky Blue
+        SNAKES.put(27, new Color(218, 112, 214)); // Orchid
+        SNAKES.put(28, new Color(255, 215, 0)); // Gold
+        SNAKES.put(29, new Color(0, 100, 0)); // Dark Green
+        SNAKES.put(30, new Color(139, 69, 19)); // Saddle Brown
+        SNAKES.put(31, new Color(255, 140, 0)); // Dark Orange
+        SNAKES.put(32, new Color(255, 105, 180)); // Hot Pink
+        SNAKES.put(33, new Color(173, 216, 230)); // Light Blue
+        SNAKES.put(34, new Color(255, 239, 213)); // Papaya Whip
+        SNAKES.put(35, new Color(255, 228, 196)); // Bisque
+        SNAKES.put(36, new Color(0, 255, 255)); // Aqua
+        SNAKES.put(37, new Color(127, 255, 212)); // Aquamarine
+        SNAKES.put(38, new Color(240, 230, 140)); // Khaki
+        SNAKES.put(39, new Color(255, 228, 225)); // Misty Rose
+    }
+
+    public String getColorName(Color color) {
+        if (Color.RED.equals(color)) return "Red";
+        if (Color.GREEN.equals(color)) return "Green";
+        if (Color.BLUE.equals(color)) return "Blue";
+        if (Color.YELLOW.equals(color)) return "Yellow";
+        if (Color.ORANGE.equals(color)) return "Orange";
+        if (Color.MAGENTA.equals(color)) return "Magenta";
+        if (Color.CYAN.equals(color)) return "Cyan";
+        if (Color.PINK.equals(color)) return "Pink";
+        if (Color.GRAY.equals(color)) return "Gray";
+        if (Color.BLACK.equals(color)) return "Black";
+        if (Color.WHITE.equals(color)) return "White";
+        if (new Color(128, 0, 0).equals(color)) return "Maroon";
+        if (new Color(0, 128, 0).equals(color)) return "Dark Green";
+        if (new Color(0, 0, 128).equals(color)) return "Navy";
+        if (new Color(128, 128, 0).equals(color)) return "Olive";
+        if (new Color(128, 0, 128).equals(color)) return "Purple";
+        if (new Color(0, 128, 128).equals(color)) return "Teal";
+        if (new Color(192, 192, 192).equals(color)) return "Silver";
+        if (new Color(255, 165, 0).equals(color)) return "Orange";
+        if (new Color(75, 0, 130).equals(color)) return "Indigo";
+        if (new Color(255, 20, 147).equals(color)) return "Deep Pink";
+        if (new Color(0, 255, 127).equals(color)) return "Spring Green";
+        if (new Color(70, 130, 180).equals(color)) return "Steel Blue";
+        if (new Color(255, 99, 71).equals(color)) return "Tomato";
+        if (new Color(220, 20, 60).equals(color)) return "Crimson";
+        if (new Color(46, 139, 87).equals(color)) return "Sea Green";
+        if (new Color(0, 191, 255).equals(color)) return "Deep Sky Blue";
+        if (new Color(218, 112, 214).equals(color)) return "Orchid";
+        if (new Color(255, 215, 0).equals(color)) return "Gold";
+        if (new Color(0, 100, 0).equals(color)) return "Dark Green";
+        if (new Color(139, 69, 19).equals(color)) return "Saddle Brown";
+        if (new Color(255, 140, 0).equals(color)) return "Dark Orange";
+        if (new Color(255, 105, 180).equals(color)) return "Hot Pink";
+        if (new Color(173, 216, 230).equals(color)) return "Light Blue";
+        if (new Color(255, 239, 213).equals(color)) return "Papaya Whip";
+        if (new Color(255, 228, 196).equals(color)) return "Bisque";
+        if (new Color(0, 255, 255).equals(color)) return "Aqua";
+        if (new Color(127, 255, 212).equals(color)) return "Aquamarine";
+        if (new Color(240, 230, 140).equals(color)) return "Khaki";
+        if (new Color(255, 228, 225).equals(color)) return "Misty Rose";
+        if (new Color(240, 255, 255).equals(color)) return "Azure";
+        return "Unknown Color";
     }
 }

@@ -20,4 +20,12 @@ public class Prey {
     }
 
 
+    public double getRadius() {
+        double fillRate = (System.currentTimeMillis() - spawnTime) / 1200.0;
+        if (fillRate >= 1) {
+            return size;
+        } else {
+            return (1 - Math.cos(Math.PI * fillRate)) / 2 * size;
+        }
+    }
 }

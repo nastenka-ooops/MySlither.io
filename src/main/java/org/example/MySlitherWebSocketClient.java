@@ -558,10 +558,9 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             int nameLength = data[24];
             StringBuilder name = new StringBuilder(nameLength);
             for (int i = 0; i < nameLength; i++) {
-                name.append((char) data[24 + i]);
+                name.append((char) data[25 + i]);
             }
 
-            //TODO and with this
             int customSkinDataLength = data[25 + nameLength];
             StringBuilder customSkinDataName = new StringBuilder(customSkinDataLength);
             for (int i = 0; i < customSkinDataLength; i++) {
@@ -585,7 +584,7 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                 body.addFirst(new SnakeBodyPart(currentBodyPartX, currentBodyPartY));
             }
 
-            model.addSnake(snakeId, name.toString(), x, y, ang, wang, speed, fam, body);
+            model.addSnake(snakeId, name.toString(), view.SNAKES.get(skin), x, y, ang, wang, speed, fam, body);
             view.log("add snake with id " + snakeId + " name " + name + " x " + x + " y " + y + " ang " + ang + " wang " + wang +
                     " speed " + speed + " fam " + fam + " and body " + body.size());
         } else {
