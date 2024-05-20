@@ -118,7 +118,7 @@ public class MySlitherModel {
 
     public void removeFood(int x, int y){
         synchronized (view.modelLock) {
-            foods.remove(y * sectorSize *3 + x);
+            foods.remove((y * gameRadius * 3) + x);
         }
     }
 
@@ -188,8 +188,9 @@ public class MySlitherModel {
                 }
 
                 // Обновляем положение змеи
-                cSnake.x += Math.cos(cSnake.ang) * snakeDistance;
-                cSnake.y += Math.sin(cSnake.ang) * snakeDistance;
+                //TODO because of this changes there is a big dick after snake tail
+                //cSnake.x += Math.cos(cSnake.ang) * snakeDistance;
+                //cSnake.y += Math.sin(cSnake.ang) * snakeDistance;
             });
 
             double preyDeltaAngle = mamu2 * deltaTime;

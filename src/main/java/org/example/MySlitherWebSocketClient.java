@@ -21,6 +21,10 @@ import java.util.stream.Collectors;
 import static org.example.MySlitherModel.PI2;
 
 public class MySlitherWebSocketClient extends WebSocketClient {
+
+    private static final byte[] DATA_PING = new byte[]{(byte) 251};
+    private static final byte[] DATA_BOOST_START = new byte[]{(byte) 253};
+    private static final byte[] DATA_BOOST_STOP = new byte[]{(byte) 254};
     private static final double ANGLE_CONSTANT = 16777215;
     private static final Map<String, String> HEADER = new LinkedHashMap<>();
 
@@ -28,8 +32,11 @@ public class MySlitherWebSocketClient extends WebSocketClient {
     private MySlitherModel model;
 
     private byte[] initRequest;
-
+    private long lastAngleTime, lastPingTime;
+    private byte lastAngleContent, angleToBeSent;
+    private boolean lastBoostContent;
     private boolean waitingForPong;
+
 
     static {
         HEADER.put("Origin", "http://slither.io");
@@ -137,8 +144,26 @@ public class MySlitherWebSocketClient extends WebSocketClient {
         }
     }
 
-    void sendData(){
-        //TODO send data to server
+    void sendData(Player.Wish wish){
+        if (wish.angle != null){
+            angleToBeSent = (byte) (wish.angle * 251 / PI2);
+        }
+        if (angleToBeSent != lastAngleContent && System.currentTimeMillis()-lastAngleTime>100){
+            lastAngleTime = System.currentTimeMillis();
+            lastAngleContent = angleToBeSent;
+            send(new byte[]{angleToBeSent});
+        }
+
+        if (wish.boost != null && wish.boost != lastBoostContent){
+            lastBoostContent = wish.boost;
+            send(wish.boost ? DATA_BOOST_START : DATA_BOOST_STOP);
+        }
+
+        if (!waitingForPong && System.currentTimeMillis() - lastPingTime > 250){
+            lastPingTime = System.currentTimeMillis();
+            waitingForPong = true;
+            send(DATA_PING);
+        }
     }
 
     private void processKill(int[] data) {
@@ -549,7 +574,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             //Snake last body part fullness
             double fam = ((data[14] << 16) | (data[15] >> 8) | data[16]) / ANGLE_CONSTANT;
 
-            //TODO do smth with this
             int skin = data[17];
 
             double x = ((data[18] << 16) | (data[19] << 8) | (data[20])) / 5.0;

@@ -46,7 +46,7 @@ public class MySlitherCanvas extends JPanel {
         }
 
         private void readWang(MouseEvent event) {
-            wang = (Math.atan2((event.getY() - getHeight() / 2), (event.getX() - getWidth() / 2)) + PI2) % PI2;
+            wang = (Math.atan2((event.getY() - (double) (getHeight() / 2)), (event.getX() - (double) (getWidth() / 2))) + PI2) % PI2;
         }
 
         @Override
@@ -56,9 +56,9 @@ public class MySlitherCanvas extends JPanel {
     }
 
     private final int MAX_ZOOM = 18;
-    private final int MIN_ZOOM = -2;
+    private final int MIN_ZOOM = 0;
 
-    private int zoom = 12;
+    private int zoom = 14;
 
     public ScheduledExecutorService repaintThread;
     final MouseInput mouseInput = new MouseInput();
@@ -197,7 +197,6 @@ public class MySlitherCanvas extends JPanel {
                 g.fill(new Ellipse2D.Double(prey.x - preyRadius, prey.y - preyRadius,
                         preyRadius * 2, preyRadius * 2));
             });
-
 
             //Paint snakes
             oldStroke = g.getStroke();

@@ -235,8 +235,8 @@ public class MySlitherJFrame extends JFrame {
             public void run() {
                 synchronized (modelLock) {
                     if (status == Status.CONNECTED && model != null) {
-                        //model.update();
-                        //client.sendData(player.action(model));
+                        model.update();
+                        client.sendData(player.action(model));
                     }
                 }
             }

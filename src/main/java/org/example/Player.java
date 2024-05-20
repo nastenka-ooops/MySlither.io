@@ -11,11 +11,11 @@ public abstract class Player {
     public abstract Wish action(MySlitherModel model);
 
     static class Wish{
-        final double angle;
-        final boolean boost;
+        final Double angle;
+        final Boolean boost;
 
-        public Wish(double angle, boolean boost) {
-            if (angle<0 || angle>=PI2){
+        public Wish(Double angle, Boolean boost) {
+            if (angle != null && (angle<0 || angle>=PI2)){
                 throw new IllegalArgumentException("angle not in range 0 to PI2");
             }
             this.angle = angle;
