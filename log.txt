@@ -1,0 +1,191 @@
+  2037	fetching server list...
+  3652	resolved 14 servers
+  3688	connecting to ws://209.58.183.136:444/slither ...
+  6703	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+  6704	connecting to ws://185.50.104.165:444/slither ...
+  8239	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+  8243	connecting to ws://147.135.37.157:444/slither ...
+ 13090	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+ 13091	connecting to ws://31.204.145.104:444/slither ...
+ 15849	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+ 15851	connecting to ws://139.99.130.217:444/slither ...
+ 19295	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+ 19297	connecting to ws://147.135.37.157:444/slither ...
+ 23318	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+ 23319	connecting to ws://147.135.37.157:444/slither ...
+ 24739	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+ 24739	connecting to ws://185.50.104.165:444/slither ...
+ 26259	closed: 1002, false, draft Draft_6455 extension: DefaultExtension max frame size: 2147483647 refuses handshake
+ 26260	connecting to ws://145.239.6.20:446/slither ...
+ 27434	connected: Switching Protocols
+ 27434	sending pre-init request
+ 29743	sending decrypted, manipulated secret
+ 29743	send init-request
+ 33328	newFam 0.7259111837095727
+ 33328	update body-parts invalid cmd/length: 5, 7
+ 33329	newFam 0.07262301877874248
+ 33329	update body-parts invalid cmd/length: 5, 7
+ 33968	update body-parts invalid cmd/length: 4, 6
+ 33969	newFam 0.7223986221789492
+ 34780	update body-parts invalid cmd/length: 5, 7
+ 34780	newFam 0.17861695162158917
+ 34780	update body-parts invalid cmd/length: 5, 7
+ 34780	newFam 0.5397742116316683
+ 34780	newFam 0.5382722937030967
+ 34780	newFam 0.8780570553575191
+ 34782	newFam 0.7933063979927538
+ 34782	update body-parts invalid cmd/length: 4, 6
+ 34782	newFam 0.44959547815295925
+ 34782	newFam 0.42901846343388933
+ 34782	newFam 0.9471926657672325
+ 35009	newFam 0.9374964796004581
+ 35010	update body-parts invalid cmd/length: 5, 7
+ 35010	newFam 0.2194292676108639
+ 35010	newFam 0.1840331664105157
+ 35010	leaderboard is set
+ 35028	newFam 0.2727637453534451
+ 35028	update body-parts invalid cmd/length: 5, 7
+ 35028	update body-parts invalid cmd/length: 5, 7
+ 35032	new bode part was add
+ 35055	newFam 0.01630109645730832
+ 35167	update body-parts invalid cmd/length: 3, 7
+ 35168	update body-parts invalid cmd/length: 3, 7
+ 35168	update body-parts invalid cmd/length: 3, 7
+ 35168	newFam 0.8135711439592328
+ 35168	newFam 0.2941989477991431
+ 35482	update body-parts invalid cmd/length: 5, 7
+ 35483	newFam 0.07974559544000598
+ 35483	newFam 1.0
+ 35483	add snake with id 22771
+ 35484	new bode part was add
+ 35516	newFam 0.8094717746658191
+ 35732	update body-parts invalid cmd/length: 5, 7
+ 36032	new bode part was add
+ 36033	newFam 0.0
+ 36033	newFam 0.09280503349334202
+ 36033	update body-parts invalid cmd/length: 5, 7
+ 36033	update body-parts invalid cmd/length: 5, 7
+ 36119	add snake with id 6787
+ 36313	new bode part was add
+ 36314	new bode part was add
+ 36314	update body-parts invalid cmd/length: 5, 7
+ 36314	newFam 1.0
+ 36552	new bode part was add
+ 36963	new bode part was add
+ 36964	newFam 0.15714431745674118
+ 36964	new bode part was add
+ 37131	new bode part was add
+ 37532	new bode part was add
+ 37532	new bode part was add
+ 38463	new bode part was add
+ 38463	new bode part was add
+ 38463	newFam 1.0
+ 38463	newFam 0.2869222931219514
+ 38464	update body-parts invalid cmd/length: 5, 7
+ 39116	new bode part was add
+ 39116	newFam 0.25458730784578965
+ 39117	newFam 0.5512039393904173
+ 39117	update body-parts invalid cmd/length: 5, 7
+ 39117	update body-parts invalid cmd/length: 5, 7
+ 39776	update body-parts invalid cmd/length: 5, 7
+ 39981	newFam 0.20073730949981866
+ 40053	new bode part was add
+ 40054	newFam 0.03643757322058518
+ 40054	update body-parts invalid cmd/length: 3, 7
+ 40054	newFam 1.0
+ 40054	newFam 0.42150017151237557
+ 40054	newFam 0.6963600931382234
+ 40054	newFam 0.2558248791590261
+ 40054	new bode part was add
+ 40054	update body-parts invalid cmd/length: 5, 7
+ 41014	newFam 0.17625011064112847
+ 41014	update body-parts invalid cmd/length: 5, 7
+ 41031	newFam 0.09203041148366997
+ 41031	newFam 0.272487418203796
+ 41031	new bode part was add
+ 41032	update body-parts invalid cmd/length: 5, 7
+ 41032	new bode part was add
+ 41032	update body-parts invalid cmd/length: 5, 7
+ 41032	leaderboard is set
+ 41032	newFam 0.32834835817506064
+ 41032	new bode part was add
+ 41032	newFam 0.8650283733027204
+ 41032	new bode part was add
+ 41032	update body-parts invalid cmd/length: 5, 7
+ 41032	update body-parts invalid cmd/length: 5, 7
+ 41032	newFam 0.35127391524755447
+ 41032	add snake with id 64591
+ 41032	newFam 0.875774614559091
+ 41033	update body-parts invalid cmd/length: 5, 7
+ 41033	update body-parts invalid cmd/length: 5, 7
+ 41033	add snake with id 62456
+ 41065	update body-parts invalid cmd/length: 3, 7
+ 41066	update body-parts invalid cmd/length: 5, 7
+ 41066	newFam 1.0
+ 41066	new bode part was add
+ 41073	update body-parts invalid cmd/length: 3, 7
+ 41073	newFam 0.904131943233725
+ 41073	update body-parts invalid cmd/length: 5, 7
+ 42254	update body-parts invalid cmd/length: 5, 7
+ 42287	newFam 0.8999462664095322
+ 42287	newFam 0.28492923289115624
+ 42287	update body-parts invalid cmd/length: 5, 7
+ 42287	newFam 0.4134299405473435
+ 42287	new bode part was add
+ 42287	update body-parts invalid cmd/length: 5, 7
+ 42287	update body-parts invalid cmd/length: 5, 7
+ 42287	update body-parts invalid cmd/length: 5, 7
+ 42287	update body-parts invalid cmd/length: 5, 7
+ 42287	newFam 0.4443019297302919
+ 42287	update body-parts invalid cmd/length: 5, 7
+ 42455	newFam 0.4813843060364906
+ 42456	update body-parts invalid cmd/length: 5, 7
+ 42466	add snake with id 15232
+ 42466	update body-parts invalid cmd/length: 5, 7
+ 42466	update body-parts invalid cmd/length: 5, 7
+ 42636	update body-parts invalid cmd/length: 5, 7
+ 42637	newFam 0.6852943113621659
+ 42637	update body-parts invalid cmd/length: 5, 7
+ 42637	add snake with id 49314
+ 42637	update body-parts invalid cmd/length: 3, 7
+ 43984	leaderboard is set
+ 43984	newFam 0.7797986733793422
+ 44298	update body-parts invalid cmd/length: 5, 7
+ 44298	update body-parts invalid cmd/length: 5, 7
+ 44894	newFam 0.7537799926865096
+ 44894	update body-parts invalid cmd/length: 5, 7
+ 44894	update body-parts invalid cmd/length: 5, 7
+ 44894	update body-parts invalid cmd/length: 5, 7
+ 44895	update body-parts invalid cmd/length: 5, 7
+ 45940	update body-parts invalid cmd/length: 5, 7
+ 45940	update body-parts invalid cmd/length: 5, 7
+ 45940	newFam 0.9228538824828794
+ 45940	update body-parts invalid cmd/length: 5, 7
+ 45940	update body-parts invalid cmd/length: 5, 7
+ 45940	newFam 0.9488538473161368
+ 45940	update body-parts invalid cmd/length: 5, 7
+ 45940	update body-parts invalid cmd/length: 5, 7
+ 45943	new bode part was add
+ 45943	update body-parts invalid cmd/length: 5, 7
+ 45943	newFam 1.0
+ 45943	update body-parts invalid cmd/length: 5, 7
+ 45943	new bode part was add
+ 45943	newFam 0.41594907140428256
+ 45943	update body-parts invalid cmd/length: 3, 7
+ 46047	update body-parts invalid cmd/length: 5, 7
+ 46047	newFam 0.5956679341595134
+ 46047	update body-parts invalid cmd/length: 5, 7
+ 46047	update body-parts invalid cmd/length: 5, 7
+ 46047	update body-parts invalid cmd/length: 5, 7
+ 46047	newFam 0.14056975487290352
+ 46047	newFam 0.48682632963814315
+ 46047	update body-parts invalid cmd/length: 5, 7
+ 46047	update body-parts invalid cmd/length: 5, 7
+ 46360	newFam 0.6498791366743527
+ 46360	update body-parts invalid cmd/length: 5, 7
+ 46360	update body-parts invalid cmd/length: 5, 7
+ 46488	newFam 0.2371860883942895
+ 46488	update body-parts invalid cmd/length: 5, 7
+ 46493	update body-parts invalid cmd/length: 5, 7
+ 46995	newFam 0.8400497937232133
+ 47334	update body-par

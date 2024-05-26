@@ -1,0 +1,67 @@
+<mxfile host="Electron" modified="2024-05-26T15:08:51.046Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.8 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="fGv-hYMQO4OJePBXmU5K" version="24.4.8" type="device">
+  <diagram name="Страница — 1" id="rW8ufnuevsZrkg_QHFo1">
+    <mxGraphModel dx="1738" dy="1211" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-1" target="5AbwtEUBMW_kHvFPisTU-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-1" value="Начало" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="120" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-2" value="Инициализация переменных" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="210" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-3" target="5AbwtEUBMW_kHvFPisTU-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-3" value="Пока счетчик меньше 24" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="300" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-4" target="5AbwtEUBMW_kHvFPisTU-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-4" value="Декодировать первое значени" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="390" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-5" target="5AbwtEUBMW_kHvFPisTU-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-5" value="Объединение двух значений в одно промежуточное" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="480" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-6" target="5AbwtEUBMW_kHvFPisTU-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-6" value="Корректировка полученного промежуточного значения" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="570" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-7" value="Рассчитать и записать результат" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="660" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-8" target="5AbwtEUBMW_kHvFPisTU-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-8" value="Увеличить счетчик на 1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;flipV=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="750" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-9" value="Вернуть результат" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="840" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-10" value="Конец" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="930" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-2" target="5AbwtEUBMW_kHvFPisTU-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-7" target="5AbwtEUBMW_kHvFPisTU-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5AbwtEUBMW_kHvFPisTU-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="5AbwtEUBMW_kHvFPisTU-9" target="5AbwtEUBMW_kHvFPisTU-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

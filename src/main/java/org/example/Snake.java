@@ -35,14 +35,6 @@ public class Snake {
         return Math.min(6, 1 + (body.size() - 2) / 106.0);
     }
 
-    //Get direction change angle
-    double getScang() {
-        return 0.13 + 0.87 * Math.pow((7 - getSc()) / 6, 2);
-    }
-    // Get turning speed percentage
-    double getSpang() {
-        return Math.min(speed / model.spangdv, 1);
-    }
     // get the factor of snake speed
     private double getFsp() {
         return model.nsp1 + model.nsp2 * getSc();

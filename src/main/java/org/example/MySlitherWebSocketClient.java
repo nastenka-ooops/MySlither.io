@@ -91,8 +91,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             case 'c' -> processRemoveFood(data);
             case 'j' -> processUpdatePrey(data);
             case 'y' -> processAddRemovePrey(data);
-
-            // case 'o':
             case 'k' -> processKill(data);
         }
     }
@@ -383,7 +381,6 @@ public class MySlitherWebSocketClient extends WebSocketClient {
             snake.body.pollLast();
         }
     }
-
     private void processUpdateFam(int[] data) {
         if (data.length != 8) {
             view.log("update fam wrong length!");
@@ -574,7 +571,8 @@ public class MySlitherWebSocketClient extends WebSocketClient {
                 body.addFirst(new SnakeBodyPart(currentBodyPartX, currentBodyPartY));
             }
 
-            model.addSnake(snakeId, name.toString(), view.SNAKES.get(skin), x, y, ang, wang, speed, fam, body);
+            Snake snake = new Snake(snakeId, name.toString(), view.SNAKES.get(skin),x,y,wang,ang,speed,fam,body,model);
+            model.addSnake(snake);
         } else {
             view.log("add/remove snake wrong length!");
         }

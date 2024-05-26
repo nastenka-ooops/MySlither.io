@@ -1,0 +1,49 @@
+<mxfile host="Electron" modified="2024-05-25T16:51:22.691Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.8 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="F-OCMXNa1O5V-Y-DLO9e" version="24.4.8" type="device">
+  <diagram name="Страница — 1" id="RPWdYe4i9o2R_GhtsujX">
+    <mxGraphModel dx="782" dy="545" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="HXTkl7oupIXHr3P0b36I-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXTkl7oupIXHr3P0b36I-1" target="HXTkl7oupIXHr3P0b36I-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-1" value="Начало" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="350" y="120" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXTkl7oupIXHr3P0b36I-2" target="HXTkl7oupIXHr3P0b36I-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-2" value="&lt;div style=&quot;&quot;&gt;Получить&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;&quot;&gt;массив&lt;/div&gt;&lt;div style=&quot;&quot;&gt;байтов&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="210" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXTkl7oupIXHr3P0b36I-3" target="HXTkl7oupIXHr3P0b36I-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-3" value="&lt;div style=&quot;&quot;&gt;Проверить длину полученного массива&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="300" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXTkl7oupIXHr3P0b36I-4" target="HXTkl7oupIXHr3P0b36I-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-4" value="&lt;div style=&quot;&quot;&gt;Преобразовать байты в целые числа&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;align=center;" vertex="1" parent="1">
+          <mxGeometry x="350" y="390" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="HXTkl7oupIXHr3P0b36I-5" target="HXTkl7oupIXHr3P0b36I-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-5" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;font face=&quot;ui-sans-serif, -apple-system, system-ui, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica, Apple Color Emoji, Arial, Segoe UI Emoji, Segoe UI Symbol&quot; color=&quot;#0d0d0d&quot;&gt;&lt;span style=&quot;white-space-collapse: preserve;&quot;&gt;Получить символ команды из 3-его элемента массива&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;align=center;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="480" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-7" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;span style=&quot;color: rgb(13, 13, 13); font-family: ui-sans-serif, -apple-system, system-ui, &amp;quot;Segoe UI&amp;quot;, Roboto, Ubuntu, Cantarell, &amp;quot;Noto Sans&amp;quot;, sans-serif, Helvetica, &amp;quot;Apple Color Emoji&amp;quot;, Arial, &amp;quot;Segoe UI Emoji&amp;quot;, &amp;quot;Segoe UI Symbol&amp;quot;; text-align: left; white-space-collapse: preserve;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;В зависимости от значения команды выполнить соответствующий метод обработки данных. &lt;/font&gt;&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=0;strokeWidth=2;align=center;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="350" y="570" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-8" value="Конец" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="350" y="700" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="HXTkl7oupIXHr3P0b36I-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="HXTkl7oupIXHr3P0b36I-7" target="HXTkl7oupIXHr3P0b36I-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
