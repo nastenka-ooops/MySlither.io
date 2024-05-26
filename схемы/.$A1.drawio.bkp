@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-05-26T16:17:39.385Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.8 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="nfVgFyAj5RAM9dTfDWjz" version="24.4.8" type="device">
+<mxfile host="Electron" modified="2024-05-26T16:14:30.643Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.4.8 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="zyJdjtxfbZzmrw5SoLQu" version="24.4.8" type="device">
   <diagram name="Страница — 1" id="2J8nw3IHy8bP_hC71cdx">
-    <mxGraphModel dx="1564" dy="1090" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
+    <mxGraphModel dx="1117" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3300" pageHeight="2339" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -187,7 +187,7 @@
         <mxCell id="lS7RHQnMeSK8aA6FiKQ6-14" value="13" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="765" y="635" width="40" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="lS7RHQnMeSK8aA6FiKQ6-15" value="12" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxCell id="lS7RHQnMeSK8aA6FiKQ6-15" value="14" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="910" y="226.63" width="40" height="30" as="geometry" />
         </mxCell>
       </root>
